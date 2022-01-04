@@ -1,6 +1,5 @@
 package com.baremetalcode.db.dynamo.repos;
 
-import com.baremetalcode.db.domain.Article;
 import com.baremetalcode.db.domain.User;
 import com.baremetalcode.db.dynamo.DynamoOps;
 import com.baremetalcode.db.mappers.DomainMapper;
@@ -21,6 +20,7 @@ public class UsersRepo extends DynamoOps {
     public static final String COL_FIRST_NAME = "firstName";
     public static final String COL_LAST_NAME = "lastName";
     public static final String COL_COUNTRY_ISO = "countryISO";
+    public static final String ATTR_USER_ADDRESS = "userAddress";
 
     @Inject
     DynamoDbAsyncClient dynamoDbAsync;
