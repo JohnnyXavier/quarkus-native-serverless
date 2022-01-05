@@ -3,6 +3,7 @@ package com.baremetalcode.db.dynamo.repos;
 import com.baremetalcode.db.domain.Article;
 import com.baremetalcode.db.dynamo.DynamoOps;
 import com.baremetalcode.db.mappers.DomainMapper;
+import io.quarkus.cache.CacheResult;
 import io.smallrye.mutiny.Uni;
 import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient;
 import software.amazon.awssdk.services.dynamodb.model.PutItemRequest;
@@ -40,6 +41,7 @@ public class ArticlesRepo extends DynamoOps {
                 .andSwitchTo(this::findAll);
     }
 
+    @CacheResult(cacheName = "articles-all")
     public Uni<List<Article>> findAll() {
         return Uni.createFrom()
                 .completionStage(() -> dynamoDbAsync.scan(scanRequest(TABLE_NAME)))
@@ -50,6 +52,7 @@ public class ArticlesRepo extends DynamoOps {
                         .collect(Collectors.toList()));
     }
 
+    @CacheResult(cacheName = "articles-by-id")
     public Uni<Article> findById(final String articleUuid) {
         return Uni.createFrom()
                 .completionStage(() -> dynamoDbAsync.getItem(findById(articleUuid, COL_UUID, TABLE_NAME)))
@@ -57,6 +60,7 @@ public class ArticlesRepo extends DynamoOps {
                 .transform(response -> DomainMapper.toArticle(response.item()));
     }
 
+    @CacheResult(cacheName = "articles-by-user-id")
     public Uni<List<Article>> findArticleByUserId(final String userUuid) {
         return Uni.createFrom()
                 .completionStage(() -> dynamoDbAsync.scan(scanSingleAttribute(userUuid, ":userUuid", "userId = :userUuid", TABLE_NAME)))

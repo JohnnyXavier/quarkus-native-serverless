@@ -12,42 +12,45 @@ import java.util.Map;
 
 public class DomainMapper {
 
-    public static Article toArticle(final Map<String, AttributeValue> item) {
+    public static Article toArticle(final Map<String, AttributeValue> articleMap) {
+        if (articleMap == null || articleMap.isEmpty()) {
+            return null;
+        }
+
         final Article article = new Article();
 
-        if (item != null && !item.isEmpty()) {
-            article.setUuid(item.get(ArticlesRepo.COL_UUID).s());
-            article.setUserId(item.get(ArticlesRepo.COL_USER_ID).s());
-            article.setTitle(item.get(ArticlesRepo.COL_TITLE).s());
-            article.setHeader(item.get(ArticlesRepo.COL_HEADER).s());
-            article.setBody(item.get(ArticlesRepo.COL_BODY).s());
-        }
+        article.setUuid(articleMap.get(ArticlesRepo.COL_UUID).s());
+        article.setUserId(articleMap.get(ArticlesRepo.COL_USER_ID).s());
+        article.setTitle(articleMap.get(ArticlesRepo.COL_TITLE).s());
+        article.setHeader(articleMap.get(ArticlesRepo.COL_HEADER).s());
+        article.setBody(articleMap.get(ArticlesRepo.COL_BODY).s());
 
         return article;
     }
 
     public static User toUser(final Map<String, AttributeValue> userMap) {
-        final User user = new User();
-        final UserAddress userAddress = new UserAddress();
-
         if (userMap == null || userMap.isEmpty()) {
-            return user;
+            return null;
         }
+
+        final User user = new User();
 
         if (userMap.get(UsersRepo.ATTR_USER_ADDRESS) != null) {
             final Map<String, AttributeValue> addressMap = userMap.get("userAddress").m();
+            final UserAddress userAddress = new UserAddress();
 
             userAddress.setStreetName(addressMap.get("streetName").s());
             userAddress.setStreetNumber(addressMap.get("streetNumber").s());
             userAddress.setCity(addressMap.get("city").s());
             userAddress.setZipCode(addressMap.get("zipCode").s());
+
+            user.setUserAddress(userAddress);
         }
 
         user.setUuid(userMap.get(UsersRepo.COL_UUID).s());
         user.setFirstName(userMap.get(UsersRepo.COL_FIRST_NAME).s());
         user.setLastName(userMap.get(UsersRepo.COL_LAST_NAME).s());
         user.setCountryISO(userMap.get(UsersRepo.COL_COUNTRY_ISO).s());
-        user.setUserAddress(userAddress);
 
         return user;
     }

@@ -3,6 +3,7 @@ package com.baremetalcode.db.dynamo.repos;
 import com.baremetalcode.db.domain.User;
 import com.baremetalcode.db.dynamo.DynamoOps;
 import com.baremetalcode.db.mappers.DomainMapper;
+import io.quarkus.cache.CacheResult;
 import io.smallrye.mutiny.Uni;
 import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient;
 import software.amazon.awssdk.services.dynamodb.model.PutItemRequest;
@@ -40,6 +41,7 @@ public class UsersRepo extends DynamoOps {
                 .andSwitchTo(this::findAll);
     }
 
+    @CacheResult(cacheName = "users-all")
     public Uni<List<User>> findAll() {
         return Uni.createFrom()
                 .completionStage(() -> dynamoDbAsync.scan(scanRequest(TABLE_NAME)))
@@ -50,6 +52,7 @@ public class UsersRepo extends DynamoOps {
                         .collect(Collectors.toList()));
     }
 
+    @CacheResult(cacheName = "users-by-id")
     public Uni<User> findById(final String userUuid) {
         return Uni.createFrom()
                 .completionStage(() -> dynamoDbAsync.getItem(findById(userUuid, COL_UUID, TABLE_NAME)))
@@ -57,6 +60,7 @@ public class UsersRepo extends DynamoOps {
                 .transform(response -> DomainMapper.toUser(response.item()));
     }
 
+    @CacheResult(cacheName = "users-by-countryId")
     public Uni<List<User>> findUserByCountryIsoId(final String countryIso) {
         return Uni.createFrom()
                 .completionStage(() -> dynamoDbAsync.scan(scanSingleAttribute(countryIso, ":countryISO", "countryISO = :countryISO", TABLE_NAME)))
