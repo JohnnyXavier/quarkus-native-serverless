@@ -5,15 +5,16 @@ import com.baremetalcode.db.dynamo.DynamoOps;
 import com.baremetalcode.db.mappers.DomainMapper;
 import io.quarkus.cache.CacheResult;
 import io.smallrye.mutiny.Uni;
+import jakarta.enterprise.context.ApplicationScoped;
+import lombok.RequiredArgsConstructor;
 import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient;
 import software.amazon.awssdk.services.dynamodb.model.PutItemRequest;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
+@RequiredArgsConstructor
 public class ArticlesRepo extends DynamoOps {
 
     public static final String TABLE_NAME = "Articles";
@@ -23,8 +24,7 @@ public class ArticlesRepo extends DynamoOps {
     public static final String COL_HEADER = "header";
     public static final String COL_BODY = "body";
 
-    @Inject
-    DynamoDbAsyncClient dynamoDbAsync;
+    private final DynamoDbAsyncClient dynamoDbAsync;
 
     protected PutItemRequest putArticle(final Article article) {
         return PutItemRequest.builder()

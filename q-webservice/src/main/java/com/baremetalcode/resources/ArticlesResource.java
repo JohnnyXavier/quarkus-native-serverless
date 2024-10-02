@@ -1,22 +1,23 @@
 package com.baremetalcode.resources;
 
-import com.baremetalcode.db.dynamo.repos.ArticlesRepo;
 import com.baremetalcode.db.domain.Article;
+import com.baremetalcode.db.dynamo.repos.ArticlesRepo;
 import io.smallrye.mutiny.Uni;
+import jakarta.ws.rs.*;
+import lombok.RequiredArgsConstructor;
 
-import javax.inject.Inject;
-import javax.ws.rs.*;
 import java.util.List;
 
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
+
 
 @Path("/articles")
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
+@RequiredArgsConstructor
 public class ArticlesResource {
 
-    @Inject
-    ArticlesRepo articlesRepo;
+    private final ArticlesRepo articlesRepo;
 
     @GET
     public Uni<List<Article>> getAllArticles() {

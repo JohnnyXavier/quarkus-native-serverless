@@ -3,20 +3,20 @@ package com.baremetalcode.resources;
 import com.baremetalcode.db.domain.User;
 import com.baremetalcode.db.dynamo.repos.UsersRepo;
 import io.smallrye.mutiny.Uni;
+import jakarta.ws.rs.*;
+import lombok.RequiredArgsConstructor;
 
-import javax.inject.Inject;
-import javax.ws.rs.*;
 import java.util.List;
 
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
 @Path("/users")
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
+@RequiredArgsConstructor
 public class UsersResource {
 
-    @Inject
-    UsersRepo usersRepo;
+    private final UsersRepo usersRepo;
 
     @GET
     public Uni<List<User>> getAllUsers() {
